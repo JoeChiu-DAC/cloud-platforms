@@ -38,7 +38,7 @@
     - name: Display the instances info
       debug:
         msg: "{{ item }}"
-      loop: "{{ gce.instance_data }}"
+      with_items: "{{ gce.instance_data }}"
 
     - name: Insert vms to ssh config
       blockinfile:
