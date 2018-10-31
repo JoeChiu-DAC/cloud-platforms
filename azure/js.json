@@ -36,6 +36,7 @@
     },
     "location": {
       "type": "string",
+      "defaultValue": "australiaeast",
       "metadata": {
         "description": "Location for all resources."
       }
