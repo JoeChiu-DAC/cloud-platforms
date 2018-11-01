@@ -1,0 +1,12 @@
+---
+# tasks file for test
+
+ - include: create_resource_group.yml
+ - include: create_virtual_network.yml
+ - include: create_subnet.yml
+ - include: create_public_ip.yml
+ - include: create_network_security_groups.yml
+ - include: create_virtual_network_interface.yml
+ - include: create_virtual_machine.yml
+ - include: vm_power_on.yml
+# - include: vm_power_off.yml

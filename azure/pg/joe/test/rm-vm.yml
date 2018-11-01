@@ -1,0 +1,15 @@
+- name: Remove Azure VM
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: remove vm and all resources
+      azure_rm_virtualmachine:
+        resource_group: InfraAutomationPOC
+        name: myVM
+        state: absent
+        remove_on_absent:
+          - all
+#           - network_interfaces
+#           #           - virtual_storage
+#           #           - public_ips

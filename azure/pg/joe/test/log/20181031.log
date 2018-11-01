@@ -1,0 +1,66 @@
+TASK [Create Azure Deploy] ******************************************************************************************************************************************************************
+task path: /opt/.gp/joe/roles/test/cad.yml:7
+<127.0.0.1> ESTABLISH LOCAL CONNECTION FOR USER: azureuser
+<127.0.0.1> EXEC /bin/sh -c 'echo ~root && sleep 0'
+<127.0.0.1> EXEC /bin/sh -c '( umask 77 && mkdir -p "` echo /root/.ansible/tmp/ansible-tmp-1540959006.14-225604868310113 `" && echo ansible-tmp-1540959006.14-225604868310113="` echo /root/.ansible/tmp/ansible-tmp-1540959006.14-225604868310113 `" ) && sleep 0'
+Using module file /usr/lib/python2.7/site-packages/ansible/modules/cloud/azure/azure_rm_deployment.py
+<127.0.0.1> PUT /root/.ansible/tmp/ansible-local-92777DEa_6n/tmpTBjFtj TO /root/.ansible/tmp/ansible-tmp-1540959006.14-225604868310113/AnsiballZ_azure_rm_deployment.py
+<127.0.0.1> EXEC /bin/sh -c 'chmod u+x /root/.ansible/tmp/ansible-tmp-1540959006.14-225604868310113/ /root/.ansible/tmp/ansible-tmp-1540959006.14-225604868310113/AnsiballZ_azure_rm_deployment.py && sleep 0'
+<127.0.0.1> EXEC /bin/sh -c '/usr/bin/python2 /root/.ansible/tmp/ansible-tmp-1540959006.14-225604868310113/AnsiballZ_azure_rm_deployment.py && sleep 0'
+<127.0.0.1> EXEC /bin/sh -c 'rm -f -r /root/.ansible/tmp/ansible-tmp-1540959006.14-225604868310113/ > /dev/null 2>&1 && sleep 0'
+changed: [localhost] => {
+    "changed": true,
+    "deployment": {
+        "group_name": "DevOps-CAD",
+        "id": "/subscriptions/6e4f4fb0-999a-4dc0-9397-f47f358d9b35/resourceGroups/DevOps-CAD/providers/Microsoft.Resources/deployments/ansible-arm",
+        "instances": [
+            {
+                "ips": [
+                    {
+                        "id": "/subscriptions/6e4f4fb0-999a-4dc0-9397-f47f358d9b35/resourceGroups/DevOps-CAD/providers/Microsoft.Network/publicIPAddresses/publicIp",
+                        "name": "publicIp",
+                        "public_ip": "40.78.94.191",
+                        "public_ip_allocation_method": "Dynamic"
+                    }
+                ],
+                "vm_name": "VM-MultiNic"
+            }
+        ],
+        "name": "ansible-arm",
+        "outputs": {}
+    },
+    "invocation": {
+        "module_args": {
+            "ad_user": null,
+            "adfs_authority_url": null,
+            "api_profile": "latest",
+            "append_tags": true,
+            "auth_source": null,
+            "cert_validation_mode": null,
+            "client_id": null,
+            "cloud_environment": "AzureCloud",
+            "deployment_mode": "incremental",
+            "deployment_name": "ansible-arm",
+            "location": "westus",
+            "parameters": null,
+            "parameters_link": "https://raw.githubusercontent.com/joehmchiu/cloud-platforms/master/azure/test.param.json",
+            "password": null,
+            "profile": null,
+            "resource_group_name": "DevOps-CAD",
+            "secret": null,
+            "state": "present",
+            "subscription_id": null,
+            "tags": null,
+            "template": null,
+            "template_link": "https://raw.githubusercontent.com/joehmchiu/cloud-platforms/master/azure/test.json",
+            "tenant": null,
+            "wait_for_deployment_completion": true,
+            "wait_for_deployment_polling_period": 10
+        }
+    },
+    "msg": "deployment succeeded"
+}
+META: ran handlers
+META: ran handlers
+
+
