@@ -20,14 +20,14 @@
           "description": "provide the sku for powerbi workspace collection."
         }
       },
-      "location": {
-        "type": "string",
-        "value": "[parameters('location')]",
-        "metadata": {
-          "description": "Location for all resources."
-        }
-      }
-    },
+#      "location": {
+#        "type": "string",
+#        "": "[parameters('location')]",
+#        "metadata": {
+#          "description": "Location for all resources."
+#        }
+#      }
+#    },
     "resources": [
       {
         "apiVersion": "2016-01-29",
