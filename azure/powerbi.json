@@ -19,7 +19,7 @@
         "metadata": {
           "description": "provide the sku for powerbi workspace collection."
         }
-      },
+      }
 #      "location": {
 #        "type": "string",
 #        "": "[parameters('location')]",
