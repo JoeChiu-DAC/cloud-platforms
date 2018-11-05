@@ -22,7 +22,7 @@
       },
       "location": {
         "type": "string",
-        "name": "[parameters('location')]",
+#        "name": "[parameters('location')]",
         "metadata": {
           "description": "Location for all resources."
         }
