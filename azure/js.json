@@ -43,7 +43,7 @@
     }
   },
   "variables": {
-    "virtualMachineName": "VM-MultiNic",
+    "virtualMachineName": "VM-Demo",
     "nic1": "nic-1",
     "nic2": "nic-2",
     "virtualNetworkName": "virtualNetwork",
