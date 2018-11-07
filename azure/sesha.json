@@ -1,0 +1,300 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "TestVMStorageType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
+    },
+    "TestVM-01Name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "TestVM-01AdminUserName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "TestVM-01AdminPassword": {
+      "type": "securestring"
+    },
+    "TestVM-01WindowsOSVersion": {
+      "type": "string",
+      "defaultValue": "2012-R2-Datacenter",
+      "allowedValues": [
+        "2008-R2-SP1",
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "Windows-Server-Technical-Preview"
+      ]
+    },
+    "TestVM-02Name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "TestVM-02AdminUserName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "TestVM-02AdminPassword": {
+      "type": "securestring"
+    },
+    "TestVM-02UbuntuOSVersion": {
+      "type": "string",
+      "defaultValue": "14.04.2-LTS",
+      "allowedValues": [
+        "12.04.5-LTS",
+        "14.04.2-LTS"
+      ]
+    },
+    "TestARM-pipDnsName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "TestVm-01-Nic-01Name": {
+      "type": "string",
+      "minLength": 1
+    }},
+  "variables": {
+    "TestARM-01Prefix": "10.0.0.0/16",
+    "TestARM-01Subnet1Name": "Subnet-1",
+    "TestARM-01Subnet1Prefix": "10.0.0.0/24",
+    "TestARM-01Subnet2Name": "Subnet-2",
+    "TestARM-01Subnet2Prefix": "10.0.1.0/24",
+    "TestVMStorageName": "[concat('TestVMStorage', uniqueString(resourceGroup().id))]",
+    "TestVM-01ImagePublisher": "MicrosoftWindowsServer",
+    "TestVM-01ImageOffer": "WindowsServer",
+    "TestVM-01OSDiskName": "TestVM-01OSDisk",
+    "TestVM-01VmSize": "Standard_D2_v2",
+    "TestVM-01VnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'TestARM-01')]",
+    "TestVM-01SubnetRef": "[concat(variables('TestVM-01VnetID'), '/subnets/', variables('TestARM-01Subnet1Name'))]",
+    "TestVM-01StorageAccountContainerName": "vhds",
+    "TestVM-01NicName": "[concat(parameters('TestVM-01Name'), 'NetworkInterface')]",
+    "TestVM-02ImagePublisher": "Canonical",
+    "TestVM-02ImageOffer": "UbuntuServer",
+    "TestVM-02OSDiskName": "TestVM-02OSDisk",
+    "TestVM-02VmSize": "Standard_D2_v2",
+    "TestVM-02VnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'TestARM-01')]",
+    "TestVM-02SubnetRef": "[concat(variables('TestVM-02VnetID'), '/subnets/', variables('TestARM-01Subnet2Name'))]",
+    "TestVM-02StorageAccountContainerName": "vhds",
+    "TestVM-02NicName": "[concat(parameters('TestVM-02Name'), 'NetworkInterface')]",
+    "TestARM-pipName": "TestARM-pip",
+    "TestVm-01-Nic-01VnetID": "[resourceId('Microsoft.Network/virtualNetworks', 'TestARM-01')]",
+    "TestVm-01-Nic-01SubnetRef": "[concat(variables('TestVm-01-Nic-01VnetID'), '/subnets/', variables('TestARM-01Subnet1Name'))]"},
+  "resources": [
+    {
+      "name": "TestARM-01",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "TestARM-01"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('TestARM-01Prefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('TestARM-01Subnet1Name')]",
+            "properties": {
+              "addressPrefix": "[variables('TestARM-01Subnet1Prefix')]"
+            }
+          },
+          {
+            "name": "[variables('TestARM-01Subnet2Name')]",
+            "properties": {
+              "addressPrefix": "[variables('TestARM-01Subnet2Prefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('TestVMStorageName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-01-01",
+      "sku": {
+        "name": "[parameters('TestVMStorageType')]"
+      },
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "TestVMStorage"
+      },
+      "kind": "Storage"
+    },
+    {
+      "name": "[variables('TestVM-01NicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'TestARM-01')]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('TestARM-pipName'))]"
+      ],
+      "tags": {
+        "displayName": "TestVM-01Nic"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('TestVM-01SubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('TestARM-pipName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('TestVM-01Name')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('TestVMStorageName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('TestVM-01NicName'))]"
+      ],
+      "tags": {
+        "displayName": "TestVM-01"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('TestVM-01VmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('TestVM-01Name')]",
+          "adminUsername": "[parameters('TestVM-01AdminUsername')]",
+          "adminPassword": "[parameters('TestVM-01AdminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('TestVM-01ImagePublisher')]",
+            "offer": "[variables('TestVM-01ImageOffer')]",
+            "sku": "[parameters('TestVM-01WindowsOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "TestVM-01OSDisk",
+            "vhd": {
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('TestVMStorageName')), '2016-01-01').primaryEndpoints.blob, variables('TestVM-01StorageAccountContainerName'), '/', variables('TestVM-01OSDiskName'), '.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('TestVM-01NicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[variables('TestVM-02NicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', 'TestARM-01')]"
+      ],
+      "tags": {
+        "displayName": "TestVM-02Nic"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('TestVM-02SubnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('TestVM-02Name')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('TestVMStorageName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('TestVM-02NicName'))]"
+      ],
+      "tags": {
+        "displayName": "TestVM-02"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('TestVM-02VmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('TestVM-02Name')]",
+          "adminUsername": "[parameters('TestVM-02AdminUsername')]",
+          "adminPassword": "[parameters('TestVM-02AdminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('TestVM-02ImagePublisher')]",
+            "offer": "[variables('TestVM-02ImageOffer')]",
+            "sku": "[parameters('TestVM-02UbuntuOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "TestVM-02OSDisk",
+            "vhd": {
+              "uri": "[concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('TestVMStorageName')), '2016-01-01').primaryEndpoints.blob, variables('TestVM-02StorageAccountContainerName'), '/', variables('TestVM-02OSDiskName'), '.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('TestVM-02NicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[variables('TestARM-pipName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "TestARM-pip"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('TestARM-pipDnsName')]"
+        }
+      }
+    }],
+  "outputs": {}
+}
+

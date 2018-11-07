@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "TestVM-01Name": {
+      "value": "AppServer-01"
+    },
+    "TestVM-01AdminUserName": {
+      "value": "ARMAdmin"
+    },
+    "TestVM-01AdminPassword": {
+      "value": "Root123!"
+    },
+    "TestVM-02Name": {
+      "value": "AppServer-02"
+    },
+    "TestVM-02AdminUserName": {
+      "value": "ARMAdmin"
+    },
+    "TestVM-02AdminPassword": {
+      "value": "Root123!"
+    },
+    "TestARM-pipDnsName": {
+      "value": "DAC.nsw.gov.au"
+    },
+    "TestVm-01-Nic-01Name": {
+      "value": "MGMT"
+    }
+  }
+}
