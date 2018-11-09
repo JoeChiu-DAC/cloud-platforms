@@ -1,0 +1,72 @@
+- name: Create Azure VM
+  hosts: localhost
+  connection: local
+
+  tasks:
+  - name: Create resource group
+    ignore_errors: yes
+    azure_rm_resourcegroup:
+      name: InfraAutomationPOC
+      location: australiaeast
+
+  - name: Create virtual network
+    azure_rm_virtualnetwork:
+      resource_group: InfraAutomationPOC
+      name: mgmtVnet
+      address_prefixes: "10.0.0.0/16"
+
+  - name: Add subnet
+    azure_rm_subnet:
+      resource_group: InfraAutomationPOC
+      name: mgmtSubnet
+      address_prefix: "10.0.1.0/24"
+      virtual_network: mgmtVnet
+
+  - name: Create public IP address
+    azure_rm_publicipaddress:
+      resource_group: InfraAutomationPOC
+      allocation_method: Static
+      name: jenkinsPublicIP
+    register: output_ip_address
+
+  - name: Dump public IP for VM which will be created
+    debug:
+      msg: "The public IP is {{ output_ip_address.state.ip_address }}."
+
+  - name: Create Network Security Group that allows SSH
+    azure_rm_securitygroup:
+      resource_group: InfraAutomationPOC
+      name: jenkinsNetworkSecurityGroup
+      rules:
+        - name: SSH
+          protocol: Tcp
+          destination_port_range: 22
+          access: Allow
+          priority: 1001
+          direction: Inbound
+
+  - name: Create virtual network inteface card
+    azure_rm_networkinterface:
+      resource_group: InfraAutomationPOC
+      name: jenkinsNIC
+      virtual_network: mgmtVnet
+      subnet: mgmtSubnet
+      public_ip_name: jenkinsPublicIP
+      security_group: jenkinsNetworkSecurityGroup
+
+  - name: Create VM
+    azure_rm_virtualmachine:
+      resource_group: InfraAutomationPOC
+      name: jenkinsVM
+      vm_size: Standard_DS1_v2
+      admin_username: azureuser
+      ssh_password_enabled: false
+      ssh_public_keys:
+        - path: /home/azureuser/.ssh/authorized_keys
+          key_data: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDb+M3Y/ewlHjNWzc1ic50XIfMj5paSli/mUzpzIGdrbJuNqtxkR+d/K5n64B4zwlEaF3MexvnFVTQR8wQ2vjD+9n3yDRSGvRu8PtBzEg6eBAo6bRt8JgyWhdyKK2vr2L3kAtwJDgA55wZXbCfsENW0zLXMa8IT0MuJg5MMbdmH5Auu2WylUFMcTBuTbUm2vQntIrQIHdIVQzjiwKvUSLLshe9/RH/RIsjy27n2pezy+cS23m7d2QcgMWK5rjHTux3pgtaUyqpIwLplmqNX8RjeoFzPpyK9l7r6xk5/eo3z6Ijuv4UHQDHYtSgEGq1l7ARDOv06sP4mos9QGJHYh/kn"
+      network_interfaces: jenkinsNIC
+      image:
+        offer: CentOS
+        publisher: OpenLogic
+        sku: '7.5'
+        version: latest
