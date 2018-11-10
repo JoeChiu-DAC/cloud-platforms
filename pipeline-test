@@ -1,23 +1,15 @@
-!/usr/bin/env groovy
-
 pipeline {
     agent any
+
+    environment {
+        DISABLE_AUTH = 'true'
+        DB_ENGINE    = 'sqlite'
+    }
+
     stages {
-        stage("build") {
+        stage('Build') {
             steps {
-                retry(3) { build("build-job") }
-            }
-        }
-        stage("tests") {
-            steps {
-                parallel (
-                    "unit test" : {
-                        build("unit-test-job")
-                    },
-                    "component test" : {
-                        build("component-test-job")
-                    }
-                )
+                sh 'printenv'
             }
         }
     }
