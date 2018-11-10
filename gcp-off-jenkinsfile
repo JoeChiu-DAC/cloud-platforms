@@ -34,7 +34,7 @@ node {
         )
 
         stage "Tasks Logged"
-        sh 'sudo /opt/bin/log.sh "${msg}"'
+        sh "sudo /opt/bin/log.sh '${msg}'"
         
         stage 'Finalize Task'
         sh "sudo /opt/bin/fin.sh ${project} ${task}"        
