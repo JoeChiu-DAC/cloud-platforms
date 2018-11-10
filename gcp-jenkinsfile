@@ -1,9 +1,10 @@
 node {
 
     project = "cloud-platforms"
-    DIR = "/opt/gcp"
-    repositoryUrl = "https://github.com/joehmchiu/${project}.git"
-    branch = "master"
+    def DIR = "/opt/gcp"
+    def workspace = pwd()
+    def repositoryUrl = "https://github.com/joehmchiu/${project}.git"
+    def branch = "master"
 
     withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
 
@@ -11,7 +12,6 @@ node {
         sh 'sudo /opt/vars/init.sh'
 
         stage 'Check List'
-        def workspace = pwd()
         echo "\u2600 workspace=${workspace}/"
         sh "ls -lrth /tmp/"
 
@@ -23,7 +23,7 @@ node {
 
         stage 'SCM Update'
         git url: repositoryUrl, branch: branch
-        sh "sudo cp -rf ./gcp/* /opt/gcp/."
+        sh "sudo cp -rf ./gcp/* ${DIR}/."
 
         stage 'Run Playbook Tasks'
         ansiblePlaybook (
