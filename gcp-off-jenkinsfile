@@ -1,4 +1,3 @@
-node {
     project = "cloud-platforms"
     script = "stop-vms.yml"
     def task = "gcp"
@@ -7,10 +6,56 @@ node {
     def branch = "master"
     def msg = "VMs powered off"
 
+
+node {
     stage 'Confirm'
     timeout(time: 30, unit: 'SECONDS') {
         input "${msg}?"
     }
+}
 
-    load "/opt/bin/jenkins-jobs.groovy"
+stage 'Init Working Env'
+node() {
+        echo "hello world"
+        sh "sudo /opt/bin/init.sh ${project} ${task}"
+}
+
+stage 'Check List'
+node() {
+        echo "\u2600 workspace=${workspace}/"
+        sh "ls -ltrh ${workspace}"
+}
+
+stage 'Check Ansible Availability'
+node() {
+        sh 'which ansible'
+}
+
+stage 'Check Ansible Version'
+node() {
+        sh 'ansible --version'
+}
+
+stage 'SCM Update'
+node() {
+        git url: repositoryUrl, branch: branch
+        sh "sudo cp -rf ./${task}/* /opt/${project}/${task}/."
+}
+
+stage 'Run Playbook Tasks'
+node() {
+    withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
+        ansiblePlaybook (
+            playbook: "/opt/${project}/${task}/${script}",
+            sudo: true
+        )
+    }
+}
+
+stage "Tasks Logged"
+node() {
+        sh "sudo /opt/bin/log.sh '${msg}'"
+
+        stage 'Finalize Task'
+        sh "sudo /opt/bin/fin.sh ${project} ${task}"
 }
