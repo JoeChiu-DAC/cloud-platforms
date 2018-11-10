@@ -8,12 +8,11 @@ node {
     def branch = "master"
     def msg = "VMs powered off"
 
-    echo ${Confirm_Power_Off}
-    
     withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
 
         stage 'Init Working Env'
         sh "sudo /opt/bin/init.sh ${project} ${task}"
+        echo "value: ${Confirm_Power_Off}"
 
         stage 'Check List'
         echo "\u2600 workspace=${workspace}/"
