@@ -1,5 +1,3 @@
-node {
-
     project = "cloud-platforms"
     script = "stop-vms.yml"
     def task = "gcp"
@@ -14,4 +12,3 @@ node {
     }
 
     load "/opt/bin/jenkins-jobs.groovy"
-}
