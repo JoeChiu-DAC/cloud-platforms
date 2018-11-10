@@ -18,7 +18,7 @@ node {
 
         stage 'Run Playbook Tasks'
         ansiblePlaybook (
-            playbook: "pwd()/gcp/start-vms.yml",
+            playbook: pwd()+"/gcp/start-vms.yml",
             sudo: true
         )
 
