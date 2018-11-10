@@ -8,5 +8,10 @@ node {
     def branch = "master"
     def msg = "VMs powered off"
 
+    stage 'Confirm'
+    timeout(time: 30, unit: 'SECONDS') {
+        input "${msg}?"
+    }
+
     load "/opt/bin/jenkins-jobs.groovy"
 }
