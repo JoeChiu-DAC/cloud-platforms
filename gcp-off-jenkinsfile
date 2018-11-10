@@ -1,6 +1,5 @@
-def ok
-timeout(time:5, unit: 'SECONDS') {
-    ok = input "Are you sure to go on?"
+if (${"PowerOff"} == "Cancel") {
+    return
 }
 
 node {
