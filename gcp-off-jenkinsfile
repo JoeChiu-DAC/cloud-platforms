@@ -1,3 +1,4 @@
+echo ${"PowerOff"}
 if (${"PowerOff"} == "Cancel") {
     return
 }
