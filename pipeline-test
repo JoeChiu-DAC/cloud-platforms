@@ -1,10 +1,18 @@
+def project = "cloud-platforms"
+def script = "stop-vms.yml"
+def task = "gcp"
+def workspace = pwd()
+def repositoryUrl = "https://github.com/joehmchiu/${project}.git"
+def branch = "master"
+def msg = "VMs powered off"
+
 pipeline {
     agent any
 
     stages {
-        stage('Build') {
-            steps {
-                echo 'Building..'
+        stage( 'Confirm' ) {
+            timeout(time: 30, unit: 'SECONDS') {
+                input "${msg}?"
             }
         }
         stage('Test') {
