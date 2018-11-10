@@ -6,7 +6,7 @@ String repositoryUrl = "https://github.com/joehmchiu/${project}.git"
 String branch = "master"
 String msg = "VMs powered off"
 
-node {
+node() {
     stage 'Confirm'
     timeout(time: 30, unit: 'SECONDS') {
         input msg + "?"
