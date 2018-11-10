@@ -6,6 +6,7 @@ node {
     def workspace = pwd()
     def repositoryUrl = "https://github.com/joehmchiu/${project}.git"
     def branch = "master"
+    def msg = "VMs powered off"
 
     withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
 
@@ -33,6 +34,9 @@ node {
         )
 
         stage "Tasks Logged"
-        sh 'sudo /opt/bin/log.sh "VMs powered off"'
+        sh 'sudo /opt/bin/log.sh "${msg}"'
+        
+        stage 'Finalize Task'
+        sh "sudo /opt/bin/fin.sh ${project} ${env}"        
     }
 }
