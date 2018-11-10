@@ -1,0 +1,38 @@
+node {
+
+    project = "cloud-platforms"
+    script = "off-vms.yml"
+    def env = "gcp"
+    def workspace = pwd()
+    def repositoryUrl = "https://github.com/joehmchiu/${project}.git"
+    def branch = "master"
+
+    withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
+
+        stage 'Init Working Env'
+        sh "sudo /opt/bin/init.sh ${project} ${env}"
+
+        stage 'Check List'
+        echo "\u2600 workspace=${workspace}/"
+        sh "cat /tmp/${project}/${env}"
+
+        stage 'Check Ansible Availability'
+        sh 'which ansible'
+
+        stage 'Check Ansible Version'
+        sh 'ansible --version'
+
+        stage 'SCM Update'
+        git url: repositoryUrl, branch: branch
+        sh "sudo cp -rf ./${env}/* /opt/${project}/${env}/."
+
+        stage 'Run Playbook Tasks'
+        ansiblePlaybook (
+            playbook: "/opt/${project}/${env}/${script}",
+            sudo: true
+        )
+
+        stage "Tasks Logged"
+        sh 'sudo /opt/bin/log.sh "VMs powered off"'
+    }
+}
