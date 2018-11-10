@@ -1,0 +1,28 @@
+node {
+    withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
+
+        stage 'Init Working Env'
+        sh 'sudo /opt/vars/init.sh'
+
+        stage 'Check List'
+        sh 'ls -alrt'
+
+        stage 'Check Ansible Availability'
+        sh 'which ansible'
+
+        stage 'Check Ansible Version'
+        sh 'ansible --version'
+
+        stage 'SCM Update'
+        sh 'sudo /opt/vars/foo.sh'
+
+        stage 'Run Playbook Tasks'
+        ansiblePlaybook (
+            playbook: "pwd()/gcp/start-vms.yml",
+            sudo: true
+        )
+
+        stage "Tasks Logged"
+        sh 'sudo /opt/vars/log.sh "VMs powered on"'
+    }
+}
