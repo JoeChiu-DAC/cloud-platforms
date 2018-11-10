@@ -6,8 +6,8 @@ repositoryUrl = "https://github.com/joehmchiu/${project}.git"
 branch = "master"
 msg = "VMs powered off"
 
-node() {
     stage 'Confirm'
+node() {
     timeout(time: 30, unit: 'SECONDS') {
         input "${msg}?"
     }
