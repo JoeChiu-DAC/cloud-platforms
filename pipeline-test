@@ -11,8 +11,10 @@ pipeline {
 
     stages {
         stage( 'Confirm' ) {
-            timeout(time: 30, unit: 'SECONDS') {
-                input "${msg}?"
+            steps {
+                timeout(time: 30, unit: 'SECONDS') {
+                    input "${msg}?"
+                }
             }
         }
         stage('Test') {
