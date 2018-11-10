@@ -2,7 +2,7 @@ node {
 
     project = "cloud-platforms"
     script = "stop-vms.yml"
-    def env = "gcp"
+    def task = "gcp"
     def workspace = pwd()
     def repositoryUrl = "https://github.com/joehmchiu/${project}.git"
     def branch = "master"
@@ -11,7 +11,7 @@ node {
     withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
 
         stage 'Init Working Env'
-        sh "sudo /opt/bin/init.sh ${project} ${env}"
+        sh "sudo /opt/bin/init.sh ${project} ${task}"
 
         stage 'Check List'
         echo "\u2600 workspace=${workspace}/"
@@ -25,11 +25,11 @@ node {
 
         stage 'SCM Update'
         git url: repositoryUrl, branch: branch
-        sh "sudo cp -rf ./${env}/* /opt/${project}/${env}/."
+        sh "sudo cp -rf ./${task}/* /opt/${project}/${task}/."
 
         stage 'Run Playbook Tasks'
         ansiblePlaybook (
-            playbook: "/opt/${project}/${env}/${script}",
+            playbook: "/opt/${project}/${task}/${script}",
             sudo: true
         )
 
@@ -37,6 +37,6 @@ node {
         sh 'sudo /opt/bin/log.sh "${msg}"'
         
         stage 'Finalize Task'
-        sh "sudo /opt/bin/fin.sh ${project} ${env}"        
+        sh "sudo /opt/bin/fin.sh ${project} ${task}"        
     }
 }
