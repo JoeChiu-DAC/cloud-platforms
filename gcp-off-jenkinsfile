@@ -1,3 +1,7 @@
+timeout(time:5, unit:'DAYS') {
+    input message:'Are you sure to go on?', submitter: 'it-devops'
+}
+
 node {
 
     project = "cloud-platforms"
