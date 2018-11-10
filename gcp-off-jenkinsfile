@@ -1,7 +1,7 @@
 node {
 
-    project = "cloud-platforms"
-    script = "stop-vms.yml"
+    def project = "cloud-platforms"
+    def script = "stop-vms.yml"
     def task = "gcp"
     def workspace = pwd()
     def repositoryUrl = "https://github.com/joehmchiu/${project}.git"
