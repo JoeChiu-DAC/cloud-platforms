@@ -1,7 +1,4 @@
-echo ${"PowerOff"}
-if (${"PowerOff"} == "Cancel") {
-    return
-}
+timeout(5)
 
 node {
 
