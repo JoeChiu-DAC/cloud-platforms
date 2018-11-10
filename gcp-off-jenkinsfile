@@ -1,3 +1,5 @@
+node {
+
     project = "cloud-platforms"
     script = "stop-vms.yml"
     def task = "gcp"
@@ -5,9 +7,6 @@
     def repositoryUrl = "https://github.com/joehmchiu/${project}.git"
     def branch = "master"
     def msg = "VMs powered off"
-
-node {
-
 
     withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
 
