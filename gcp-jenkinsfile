@@ -6,7 +6,7 @@ node {
 
         stage 'Check List'
         def workspace = pwd()
-        echo "\u2600 workspace=${workspace}"
+        echo "\u2600 workspace=${workspace}/"
         sh "ls -lrth ${workspace}"
 
         stage 'Check Ansible Availability'
