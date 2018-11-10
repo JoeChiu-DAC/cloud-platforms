@@ -1,4 +1,10 @@
 node {
+
+    project = "cloud-platforms"
+    DIR = "/opt/gcp"
+    repositoryUrl = "https://github.com/joehmchiu/${project}.git"
+    branch = "master"
+
     withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
 
         stage 'Init Working Env'
@@ -16,11 +22,12 @@ node {
         sh 'ansible --version'
 
         stage 'SCM Update'
-        sh 'sudo /opt/vars/foo.sh'
+        git url: repositoryUrl, branch: branch
+        sh "sudo cp -rf ./gcp/* /opt/gcp/."
 
         stage 'Run Playbook Tasks'
         ansiblePlaybook (
-            playbook: pwd()+"/gcp/start-vms.yml",
+            playbook: "/opt/gcp/start-vms.yml",
             sudo: true
         )
 
