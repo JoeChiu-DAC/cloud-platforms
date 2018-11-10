@@ -14,7 +14,7 @@ node {
 
         stage 'Check List'
         echo "\u2600 workspace=${workspace}/"
-        sh "cat /tmp/${project}/${env}"
+        sh "cat /tmp/env/${project}/${env}.inc"
 
         stage 'Check Ansible Availability'
         sh 'which ansible'
