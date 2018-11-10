@@ -1,3 +1,4 @@
+node {
     project = "cloud-platforms"
     script = "stop-vms.yml"
     def task = "gcp"
@@ -6,8 +7,6 @@
     def branch = "master"
     def msg = "VMs powered off"
 
-
-node {
     stage 'Confirm'
     timeout(time: 30, unit: 'SECONDS') {
         input "${msg}?"
