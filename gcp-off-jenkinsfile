@@ -1,4 +1,4 @@
-timeout(time:5, unit:'SENCONDS') {
+timeout(time:5) {
     input message:'Are you sure to go on?', submitter: 'it-devops'
 }
 
