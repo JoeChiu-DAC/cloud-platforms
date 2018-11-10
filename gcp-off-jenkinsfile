@@ -1,5 +1,3 @@
-timeout(5)
-
 node {
 
     project = "cloud-platforms"
@@ -10,6 +8,8 @@ node {
     def branch = "master"
     def msg = "VMs powered off"
 
+    echo ${Confirm_Power_Off}
+    
     withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
 
         stage 'Init Working Env'
