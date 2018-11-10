@@ -1,7 +1,7 @@
-// timeout(time:5, unit: 'SECONDS') {
-//     input message:'Are you sure to go on?', submitter: 'it-devops'
-// }
-ok = input "Are you sure to go on?"
+def ok
+timeout(time:5, unit: 'SECONDS') {
+    ok = input message:'Are you sure to go on?', submitter: 'it-devops'
+}
 
 node {
 
