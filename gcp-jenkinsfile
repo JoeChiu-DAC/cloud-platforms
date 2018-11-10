@@ -5,7 +5,8 @@ node {
         sh 'sudo /opt/vars/init.sh'
 
         stage 'Check List'
-        sh 'ls -alrt'
+        def workspace = pwd()
+        echo "\u2600 workspace=${workspace}"
 
         stage 'Check Ansible Availability'
         sh 'which ansible'
