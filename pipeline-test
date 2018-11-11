@@ -1,5 +1,7 @@
 JOB = "${env.JOB_NAME}"
+msg = "VMs powered off"
+
 stage 'run script somewhere else'
 node(){
-    echo JOB
+    echo msg
 }
