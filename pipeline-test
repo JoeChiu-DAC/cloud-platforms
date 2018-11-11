@@ -9,7 +9,5 @@ msg = "VMs powered off"
 
 stage 'Confirm'
 node() {
-    timeout(time: 30, unit: 'SECONDS') {
-        input msg + "?"
-    }
+    echo msg + "?"
 }
