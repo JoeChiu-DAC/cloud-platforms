@@ -1,31 +1,11 @@
-def project = "cloud-platforms"
-def script = "stop-vms.yml"
-def task = "gcp"
-def workspace = pwd()
-def repositoryUrl = "https://github.com/joehmchiu/${project}.git"
-def branch = "master"
-def msg = "VMs powered off"
+nodes = Jenkins.instance.globalNodeProperties
+nodes.getAll(hudson.slaves.EnvironmentVariablesNodeProperty.class)
 
-pipeline {
-    agent any
-
-    stages {
-        stage( 'Confirm' ) {
-            steps {
-                timeout(time: 30, unit: 'SECONDS') {
-                    input "${msg}?"
-                }
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
-    }
+if ( nodes.size() != 1 ) {
+  println("error: unexpected number of environment variable containers: ${nodes.size()}, expected: 1")
+} else {
+  envVars = nodes[0].envVars
+  envVars[args[0]] = args[1]
+  Jenkins.instance.save()
+  println("okay")
 }
