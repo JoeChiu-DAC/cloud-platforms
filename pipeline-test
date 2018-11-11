@@ -1,11 +1,13 @@
-nodes = Jenkins.instance.globalNodeProperties
-nodes.getAll(hudson.slaves.EnvironmentVariablesNodeProperty.class)
-
-if ( nodes.size() != 1 ) {
-  println("error: unexpected number of environment variable containers: ${nodes.size()}, expected: 1")
-} else {
-  envVars = nodes[0].envVars
-  envVars[args[0]] = args[1]
-  Jenkins.instance.save()
-  println("okay")
+pipeline {
+  agent { label 'docker' }
+  environment {
+    MY_BUILD_IDENTIFIER = "build_${env.BUILD_NUMBER}"
+  }
+  stages {
+    stage('hot_stage') {
+      steps {
+        echo "MY_BUILD_IDENTIFIER: ${env.MY_BUILD_IDENTIFIER}"
+      }
+    }
+  }
 }
