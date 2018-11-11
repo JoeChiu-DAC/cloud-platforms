@@ -9,5 +9,5 @@ msg = "VMs powered off"
 
 stage 'Confirm'
 node() {
-    echo msg + "?"
+    echo msg
 }
