@@ -1,4 +1,4 @@
-JOB = "${env.JOB_NAME}"
+
 project = "cloud-platforms"
 script = "stop-vms.yml"
 task = "gcp"
@@ -7,7 +7,9 @@ repositoryUrl = "https://github.com/joehmchiu/${project}.git"
 branch = "master"
 msg = "VMs powered off"
 
-stage 'Confirm'
+
+JOB = "${env.JOB_NAME}"
+stage 'run script somewhere else'
 node(){
     echo JOB
 }
