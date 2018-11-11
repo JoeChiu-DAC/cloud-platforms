@@ -1,5 +1,9 @@
 project = "cloud-platforms"
 code = "stop-vms.yml"
+task = "gcp"
+workspace = pwd()
+repositoryUrl = "https://github.com/joehmchiu/${project}.git"
+branch = "master"
 msg = "VMs powered off"
 
 stage 'run script somewhere else'
