@@ -1,13 +1,20 @@
-pipeline {
-  agent none
-  environment {
-    MY_BUILD_IDENTIFIER = "build_${env.BUILD_NUMBER}"
-  }
-  stages {
-    stage('hot_stage') {
-      steps {
-        echo "MY_BUILD_IDENTIFIER: ${env.MY_BUILD_IDENTIFIER}"
-      }
-    }
+#!/usr/bin/env groovy
+userInput = ""
+stage('Choose environment') {
+  userInput = input(id: 'userInput',    
+                    message: 'Choose an environment',    
+                    parameters: [
+                      [$class:                 'ChoiceParameterDefinition', choices: "Dev\nQA\nProd", name: 'Env']
+                           ]  
+  )
+}
+stage('Deploy code'){
+  node('deploy'){
+    if (userInput.Env == "Dev") {
+      // deploy dev stuff
+    } else if (userInput.Env == "QA"){
+      // deploy qa stuff
+    } else {
+      // deploy prod stuff
   }
 }
