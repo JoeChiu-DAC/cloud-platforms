@@ -8,6 +8,6 @@ branch = "master"
 msg = "VMs powered off"
 
 stage 'Confirm'
-node() {
+node(){
     echo msg
 }
