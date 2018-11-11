@@ -1,5 +1,5 @@
 project = "cloud-platforms"
-script = "on-vms.yml"
+script = "start-vms.yml"
 task = "gcp"
 repositoryUrl = "https://github.com/joehmchiu/${project}.git"
 branch = "master"
