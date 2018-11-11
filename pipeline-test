@@ -1,5 +1,14 @@
 JOB = "${env.JOB_NAME}"
-stage 'run script somewhere else'
-node(){
-    echo JOB
+project = "cloud-platforms"
+script = "stop-vms.yml"
+task = "gcp"
+workspace = pwd()
+repositoryUrl = "https://github.com/joehmchiu/${project}.git"
+branch = "master"
+msg = "VMs powered off"
+
+stage 'Confirm'
+node() {
+    timeout(time: 30, unit: 'SECONDS') {
+    input "${msg}?"
 }
