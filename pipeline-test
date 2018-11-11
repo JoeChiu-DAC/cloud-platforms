@@ -9,3 +9,9 @@ stage 'run script somewhere else'
 node(){
     echo msg
 }
+stage 'Confirm'
+node() {
+    timeout(time: 30, unit: 'SECONDS') {
+        input "${msg}?"
+    }
+}
