@@ -1,4 +1,4 @@
-JOB = "${env.JOB_NAME}.minus("ORGNAME/")}"
+JOB = "${env.JOB_NAME}"
 stage('run script somewhere else'){
   node('jenkins'){
     echo JOB
