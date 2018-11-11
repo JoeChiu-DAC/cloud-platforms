@@ -1,20 +1,6 @@
-#!/usr/bin/env groovy
-userInput = ""
-stage('Choose environment') {
-  userInput = input(id: 'userInput',    
-                    message: 'Choose an environment',    
-                    parameters: [
-                      [$class:                 'ChoiceParameterDefinition', choices: "Dev\nQA\nProd", name: 'Env']
-                           ]  
-  )
-}
-stage('Deploy code'){
-  node('deploy'){
-    if (userInput.Env == "Dev") {
-      // deploy dev stuff
-    } else if (userInput.Env == "QA"){
-      // deploy qa stuff
-    } else {
-      // deploy prod stuff
+JOB = "${env.JOB_NAME}.minus("ORGNAME/")}"
+stage('run script somewhere else'){
+  node('jenkins'){
+    echo JOB
   }
 }
