@@ -1,6 +1,5 @@
 JOB = "${env.JOB_NAME}"
-stage('run script somewhere else'){
-  node(){
+stage 'run script somewhere else'
+node(){
     echo JOB
-  }
 }
