@@ -1,4 +1,5 @@
-JOB = "${env.JOB_NAME}"
+project = "cloud-platforms"
+code = "stop-vms.yml"
 msg = "VMs powered off"
 
 stage 'run script somewhere else'
