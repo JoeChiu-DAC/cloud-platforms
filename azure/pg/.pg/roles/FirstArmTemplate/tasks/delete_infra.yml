@@ -1,0 +1,9 @@
+---
+  - name: destroy stack FirstArmTemplate
+    azure_rm_deployment:
+      state: absent
+      resource_group_name: "{{ resource_group_name }}" 
+      location: "{{ dc_location }}"
+      template_link: "{{ azuredeploy }}" 
+      parameters_link: "{{ azuredeployparams }}"
+

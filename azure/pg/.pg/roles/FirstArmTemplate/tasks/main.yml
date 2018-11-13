@@ -1,0 +1,11 @@
+---
+# tasks file for FirstArmTemplate
+
+ - include: create_infra.yml
+   tags: create
+ - include: poweron_vm.yml
+   tags: poweron
+ - include: poweroff_vm.yml
+   tags: poweroff
+ - include: delete_infra.yml
+   tags: delete

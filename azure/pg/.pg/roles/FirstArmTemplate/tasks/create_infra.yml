@@ -1,0 +1,9 @@
+---
+  - name: Provision a stack FirstArmTemplate
+    azure_rm_deployment:
+      state: present
+      resource_group_name: "{{ resource_group_name }}"
+      location: "{{ dc_location }}"
+      template_link: "{{ azuredeploy }}"
+      parameters_link: "{{ azuredeployparams }}"  
+

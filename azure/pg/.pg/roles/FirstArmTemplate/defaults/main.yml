@@ -1,0 +1,9 @@
+---
+# defaults file for FirstArmTemplate
+ resource_group_name: FirstArmTemplate
+ dc_location: australiaeast
+ vm_name: VM-Demo
+ azuredeploy: 'https://raw.githubusercontent.com/sesha-DAC/ARMTest/master/templates/js.json'
+ azuredeployparams: 'https://raw.githubusercontent.com/sesha-DAC/ARMTest/master/templates/js.param.json'
+# azuredeploy: 'https://raw.githubusercontent.com/joehmchiu/cloud-platforms/master/azure/js.json'
+# azuredeployparams: 'https://raw.githubusercontent.com/joehmchiu/cloud-platforms/master/azure/js.param.json'
