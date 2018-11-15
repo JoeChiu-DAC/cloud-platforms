@@ -1,0 +1,54 @@
+---
+- name: Create public IP address
+  azure_rm_publicipaddress:
+    resource_group: "{{ resource_group_name }}"
+    allocation_method: Static
+    name: "{{ public_ip_name }}"
+  register: azureinfo
+
+- name: Dump public IP for VM which will be created
+  debug:
+    msg: "The public IP is {{ azureinfo.state.ip_address }}."
+
+- name: set public ip
+  set_fact:
+    ip: "{{ azureinfo.state.ip_address }}"
+
+- name: Create Network Security Group that allows SSH
+  azure_rm_securitygroup:
+    resource_group: "{{ resource_group_name }}"
+    name: "{{ nsg_name }}" 
+    rules:
+      - name: SSH
+        protocol: Tcp
+        destination_port_range: 22
+        access: Allow
+        priority: 1001
+        direction: Inbound
+
+- name: Create virtual network inteface card
+  azure_rm_networkinterface:
+    resource_group: "{{ resource_group_name }}"
+    name: "{{ my_nic }}"
+    virtual_network: "{{ vnet_name }}"
+    subnet: "{{ subnet_name }}"
+    public_ip_name: "{{ public_ip_name }}"
+    security_group: "{{ nsg_name }}"
+
+- name: Create VM
+  azure_rm_virtualmachine:
+    resource_group: "{{ resource_group_name }}"
+    name: "{{ vm_name }}"
+    vm_size: Standard_DS1_v2
+    admin_username:  "{{ admin_user }}"
+    ssh_password_enabled: false
+    ssh_public_keys:
+      - path: "{{ key_path }}"
+        key_data: "{{ key }}"
+    network_interfaces: "{{ my_nic }}"
+    image:
+      offer: CentOS
+      publisher: OpenLogic
+      sku: '7.5'
+      version: latest
+

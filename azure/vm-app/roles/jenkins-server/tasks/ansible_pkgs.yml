@@ -1,0 +1,5 @@
+---
+- name: install ansible package 
+  pip:
+    name: ansible[azure] 
+    state: present
