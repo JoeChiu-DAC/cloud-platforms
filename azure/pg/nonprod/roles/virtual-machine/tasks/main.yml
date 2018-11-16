@@ -1,0 +1,6 @@
+---
+# tasks file for ansible-jenkins
+- include: create-vm.yml
+  tags: create
+- include: remove-vm.yml
+  tags: remove

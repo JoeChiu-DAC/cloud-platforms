@@ -1,0 +1,4 @@
+---
+# tasks file for ansible-jenkins
+- include: create-jenkins.yml
+  tags: jenkins

@@ -1,0 +1,120 @@
+---
+# create a vm
+
+- name: Create resource group
+  ignore_errors: yes
+  azure_rm_resourcegroup:
+    name: "{{resource_group_name}}"
+    location: australiaeast
+
+- name: Create virtual network
+  azure_rm_virtualnetwork:
+    resource_group: "{{resource_group_name}}"
+    name: "{{vnet_name}}"
+    address_prefixes: "10.0.0.0/16"
+
+- name: Add subnet
+  azure_rm_subnet:
+    resource_group: "{{resource_group_name}}"
+    name: "{{subnet_name}}"
+    address_prefix: "10.0.1.0/24"
+    virtual_network: "{{vnet_name}}"
+
+- name: Create public IP address
+  azure_rm_publicipaddress:
+    resource_group: "{{resource_group_name}}"
+    allocation_method: Static
+    name: "{{public_ip_name}}"
+  register: output_ip_address
+
+- name: Dump public IP for VM which will be created
+  debug:
+    msg: "The public IP is {{ output_ip_address.state.ip_address }}."
+  tags: ip
+
+- name: create pub_ip
+  set_fact:
+    pub_ip: "{{ output_ip_address.state.ip_address }}"
+  tags: ip
+
+- name: Create Network Security Group that allows SSH
+  azure_rm_securitygroup:
+    resource_group: "{{resource_group_name}}"
+    name: "{{nsg_name}}"
+    rules:
+      - name: SSH
+        protocol: Tcp
+        destination_port_range: 22
+        access: Allow
+        priority: 1001
+        direction: Inbound
+      - name: Jenkins
+        protocol: Tcp
+        destination_port_range: "{{ port }}"
+        access: Allow
+        priority: 1011
+        direction: Inbound
+
+- name: Create virtual network inteface card
+  azure_rm_networkinterface:
+    resource_group: "{{resource_group_name}}"
+    name: "{{my_nic}}"
+    virtual_network: "{{vnet_name}}"
+    subnet: "{{subnet_name}}"
+    public_ip_name: "{{public_ip_name}}"
+    security_group: "{{nsg_name}}"
+
+- name: Create VM
+  azure_rm_virtualmachine:
+    resource_group: "{{resource_group_name}}"
+    name: "{{vm_name}}"
+    vm_size: Standard_DS1_v2
+    admin_username: "{{admin_user}}"
+    ssh_password_enabled: false
+    ssh_public_keys:
+      - path: "{{ authkeys }}"
+        key_data: "{{ key_data }}"
+    network_interfaces: "{{my_nic}}"
+    image:
+      offer: CentOS
+      publisher: OpenLogic
+      sku: '7.5'
+      version: latest
+
+- name: create config file
+  file:
+    path: "{{ config }}"
+    mode: 0644
+    state: touch
+
+- name: Insert vms to ssh config
+  blockinfile:
+    dest: "{{ config }}"
+    marker: "# {mark} {{ marker }}"
+    block: |
+      Host {{ sshname }}
+        User {{admin_user}}
+        StrictHostKeyChecking no
+        IdentityFile {{ sshkey }}
+        Hostname {{ pub_ip }}
+        Port 22
+  tags: ip
+
+- name: Insert vms to ssh config
+  delegate_to: "{{ sshname }}"
+  become: yes
+  copy:
+    src: /root/.azure/credentials
+    dest: /tmp/foo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: remove local tmp directory
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    echo "hello world - vm" >> /tmp/foobar.log
+    [ -d /root/.azure ] || mkdir /root/.azure
+    mv -f /tmp/foo /root/.azure/credentials
+
