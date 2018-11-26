@@ -1,0 +1,57 @@
+---
+- name: set ts application for logging 
+  set_fact:
+    app: "{{playbook_dir}}/ts"
+
+- name: reload the log file
+  shell: |
+    {{app}} RELOAD 'Task Processes Started' {{log_file}}
+
+- name: test process message
+  shell: |
+    {{app}} {{role_path|basename}} "{{item}}" {{log_file}}
+  with_items:
+    - "it's a test started line"
+
+- name: set fact
+  set_fact:
+    foo: [foobar, and, hello, world]
+
+- name: display debug
+  debug:
+    msg: "{{item}} - ansible_os_family: {{ansible_os_family}}, {{ansible_distribution}}"
+  when: ansible_os_family == "RedHat"
+  with_items: "{{foo}}"
+
+- name: Uninstall the used MySQL repo.
+  yum:
+    name: https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+    state: absent
+
+- name: Install the MySQL repo.
+  yum:
+    name: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+    state: absent
+  notify:
+    - yum update
+
+- name: Override variables for MySQL (RedHat).
+  set_fact:
+    mysql_daemon: mysqld
+    mysql_packages: ['mysql-server']
+    mysql_log_error: /var/log/mysqld.err
+    mysql_syslog_tag: mysqld
+    mysql_pid_file: /var/run/mysqld/mysqld.pid
+    mysql_socket: /var/lib/mysql/mysql.sock
+
+- name: display debug
+  debug:
+    msg: "{{authentication_ldap_simple_user_search_attr}}"
+
+- name: migrate mysql config file with j2 template
+  template: src=my.cnf.j2 dest=/tmp/my.cnf
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "it's a end of process" {{log_file}}
+

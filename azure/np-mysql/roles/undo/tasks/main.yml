@@ -1,0 +1,79 @@
+---
+# Undo the installation for redo 
+- name: set ts application for logging 
+  set_fact:
+    app: "{{playbook_dir}}/ts"
+
+- name: reload the log file
+  shell: |
+    {{app}} RESTART 'Task Processes Started' {{log_file}}
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "{{role_path|basename}} process started" {{log_file}}
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "removing file - {{item}}" {{log_file}}
+  with_items:
+    - "{{undo_files}}"
+
+- name: Remove files and directories by shell
+  shell: |
+    rm -rf {{item}}
+  msg: "file {{item}} removed"
+  args:
+    warn: no
+  with_items:
+    - "{{undo_files}}"
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "removing file - {{item.f}}" {{log_file}}
+  with_items:
+    - "{{db_files}}"
+
+- name: Remove db files by shell
+  shell: |
+    rm -rf {{item.f}}
+  msg: "file {{item.f}} removed"
+  args:
+    warn: no
+  with_items:
+    - "{{db_files}}"
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "removing directory - {{item.d}}" {{log_file}}
+  with_items:
+    - "{{db_dirs}}"
+
+- name: Remove db directories by shell
+  shell: |
+    rm -rf {{item.d}}
+  msg: "directory {{item.d}} removed"
+  args:
+    warn: no
+  with_items:
+    - "{{db_dirs}}"
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "removing package - {{item}}" {{log_file}}
+  with_items:
+    - "{{packages}}"
+    - "{{db_packages}}"
+    - "{{undo_packages}}"
+
+- name: uninstall packages
+  yum: name={{ item }} state=removed
+  msg: "yum removing {{item}}"
+  with_items:
+    - "{{packages}}"
+    - "{{db_packages}}"
+    - "{{undo_packages}}"
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "{{role_path|basename}} process finished" {{log_file}}
+

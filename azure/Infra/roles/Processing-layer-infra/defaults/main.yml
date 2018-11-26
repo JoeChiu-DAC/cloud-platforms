@@ -1,0 +1,9 @@
+---
+# vars file for infra
+# subscription_id: NSWDAC_NONPROD
+ default_location: australiaeast
+ resource_group_name: npdac-processing-rg 
+ vnet_name: npdac-processing-vnet 
+ master_subnet: npdac-processing-hdp-master-subnet
+ edge_subnet: npdac-processing-hdp-edge-subnet
+

@@ -1,0 +1,8 @@
+---
+# defaults file for ansible-controller
+key_path: /home/azureuser/.ssh/authorized_keys
+key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDb+M3Y/ewlHjNWzc1ic50XIfMj5paSli/mUzpzIGdrbJuNqtxkR+d/K5n64B4zwlEaF3MexvnFVTQR8wQ2vjD+9n3yDRSGvRu8PtBzEg6eBAo6bRt8JgyWhdyKK2vr2L3kAtwJDgA55wZXbCfsENW0zLXMa8IT0MuJg5MMbdmH5Auu2WylUFMcTBuTbUm2vQntIrQIHdIVQzjiwKvUSLLshe9/RH/RIsjy27n2pezy+cS23m7d2QcgMWK5rjHTux3pgtaUyqpIwLplmqNX8RjeoFzPpyK9l7r6xk5/eo3z6Ijuv4UHQDHYtSgEGq1l7ARDOv06sP4mos9QGJHYh/kn root@np-dp-mysql-data-01.gs.local"
+#ssh_proto: Tcp
+#ssh_port: 22
+#public_ip: '{{ output_ip_address.state.ip_address }}'
+

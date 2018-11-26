@@ -1,0 +1,12 @@
+---
+# vars file for infra
+# subscription_id: NSWDAC_NONPROD
+ default_location: australiaeast
+ resource_group_name: npdac-presentation-rg 
+ vnet_name: npdac-presentation-vnet 
+ dm_subnet: npdac-presentation-dm-subnet
+ qlik_subnet: npdac-presentation-qlik-subnet
+ tab_subnet: npdac-presentation-tab-subnet
+ pb_subnet: npdac-presentation-pb-subnet
+ siradm_subnet: npdac-presentation-siradm-subnet
+

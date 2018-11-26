@@ -1,0 +1,35 @@
+FROM openshift/jenkins-2-centos7
+
+USER root
+
+{# RUN yum update -y #}
+RUN yum install -y sudo
+RUN echo "{{jenkins_user}} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN yum install -y docker-client
+RUN rm -rf {{azuredir}}
+RUN mkdir {{azuredir}}
+RUN rm -rf /etc/keys
+RUN mkdir /etc/keys
+RUN [ -d /home/{{jenkins_user}} ] || mkdir /home/{{ jenkins_user }}
+RUN echo "docker='sudo docker'" > /home/{{ jenkins_user }}/.bashrc
+
+COPY foo {{azuredir}}/{{azurecredit}}
+COPY bar /etc/keys/dac2018.key
+
+RUN chmod 600 -R /etc/keys
+
+{% for pack in yum_packs %}
+RUN yum install -y {{ pack }}
+{% endfor %}
+
+{% for pack in pip_rm_packs %}
+RUN pip uninstall -y {{ pack }}
+{% endfor %}
+
+{% for pack in pip_packs %}
+RUN pip install {{ pack }}
+{% endfor %}
+
+RUN perl -pi -e 's/#gather_subset = all/gather_subset = !all/' /etc/ansible/ansible.cfg
+
+USER {{ jenkins_user }}

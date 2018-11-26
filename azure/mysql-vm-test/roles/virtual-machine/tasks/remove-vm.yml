@@ -1,0 +1,13 @@
+---
+- name: remove vm only
+  azure_rm_virtualmachine:
+    resource_group: "{{resource_group_name}}"
+    name: "{{ resource_group_name }}"
+    state: absent
+#     force: True
+
+- name: remove config settings
+  blockinfile:
+    dest: "{{ config }}"
+    marker: "# {mark} {{ marker }}"
+    state: absent

@@ -1,0 +1,95 @@
+---
+# create a jenkins server
+
+- name: jenkins hello world
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    echo "hello world" >> /tmp/foobar.log
+
+- name: Copy credentials to the Jenkins VM
+  delegate_to: "{{ sshname }}"
+  become: yes
+  copy:
+    src: /root/.azure/credentials
+    dest: /tmp/foo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Setup the Azure credentials
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    echo "VM created for Azure pre-requisite tasks" >> /tmp/foobar.log
+
+- name: Copy SSH Key to the Jenkins VM
+  delegate_to: "{{ sshname }}"
+  become: yes
+  copy:
+    src: /etc/keys/dac2018.key
+    dest: /tmp/bar
+    owner: root
+    group: root
+    mode: 0644
+
+- name: clean up docker
+  ignore_errors: yes
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    docker stop $(docker ps -a -q)
+    docker rm -f $(docker ps -a -q)
+    docker rmi -f $(docker images -q)
+  args:
+    warn: yes
+
+- name: Install docker
+  delegate_to: "{{ sshname }}"
+  become: yes
+  yum: name={{ item }} state=installed
+  with_items:
+   - docker
+
+- name: Start the dockerd service
+  delegate_to: "{{ sshname }}"
+  become: yes
+  service: name=docker state=started enabled=yes
+
+- name: Create jenkins directory beforehand
+  delegate_to: "{{ sshname }}"
+  become: yes
+  file: path={{ jenkins_local }} state=directory owner={{uid}} mode=0755
+
+- name: Copy dockerfile to /tmp
+  delegate_to: "{{ sshname }}"
+  become: yes
+  template: src={{ dockerfile }}.j2 dest=/tmp/{{ dockerfile }}
+
+- name: Build a local jenkins docker container, it takes time...
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    cd /tmp/; docker build -t {{image}} .
+  args:
+    warn: no
+
+- name: Clean up
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    rm -f {{item}}
+  with_items:
+    - "/tmp/foo"
+    - "/tmp/bar"
+    - "/tmp/Dockerfile"
+
+- name: Run jenkins docker daemon at port 9191
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    docker run -u {{uid}} -e JENKINS_PASSWORD={{password}} -p {{port}}:8080 -p 50000:50000 -v {{sock}}:{{sock}}:z -v {{docker}}:{{docker}} -v {{sysconfig}}:{{sysconfig}}:z -v {{jenkins_local}}:{{jenkins_home}}:z -d {{image}}
+  args:
+    warn: no
+
+

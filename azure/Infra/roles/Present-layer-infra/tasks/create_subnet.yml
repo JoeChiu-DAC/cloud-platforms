@@ -1,0 +1,31 @@
+---
+ - name: Create a Subnet DM
+   azure_rm_subnet:
+     resource_group: "{{ resource_group_name }}" 
+     name: "{{ dm_subnet }}" 
+     address_prefix:  "{{ dm_cidr }}" 
+     virtual_network: "{{ vnet_name }}"
+ - name: Create a Subnet 
+   azure_rm_subnet:
+     resource_group: "{{ resource_group_name }}" 
+     name: "{{ siradm_subnet }}" 
+     address_prefix:  "{{ siradm_cidr }}" 
+     virtual_network: "{{ vnet_name }}"
+ - name: Create a Subnet 
+   azure_rm_subnet:
+     resource_group: "{{ resource_group_name }}" 
+     name: "{{ qlik_subnet }}" 
+     address_prefix:  "{{ qlik_cidr }}" 
+     virtual_network: "{{ vnet_name }}"
+ - name: Create a Subnet 
+   azure_rm_subnet:
+     resource_group: "{{ resource_group_name }}" 
+     name: "{{ tab_subnet }}" 
+     address_prefix:  "{{ tab_cidr }}" 
+     virtual_network: "{{ vnet_name }}"
+ - name: Create a Subnet 
+   azure_rm_subnet:
+     resource_group: "{{ resource_group_name }}" 
+     name: "{{ pb_subnet }}" 
+     address_prefix:  "{{ pb_cidr }}" 
+     virtual_network: "{{ vnet_name }}"

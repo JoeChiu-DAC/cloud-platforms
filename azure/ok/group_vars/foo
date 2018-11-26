@@ -1,0 +1,42 @@
+---
+# vars file for ansible-jenkins server
+#default_location: australiaeast
+resource_group_name: npdac-test-rg
+vnet_name: npdac-test-vnet
+subnet_name: npdac-test-subnet
+nsg_name: npdac-test-nsg
+admin_user: azureuser
+vm_name: JenkinsTestVM
+my_nic: JenkinTestNIC
+public_ip_name: JenkinTestPublicIP
+
+# ssh config settings
+sshkey: "/etc/keys/dac2018.key"
+sshname: Jenkins
+authkeys: "/home/{{admin_user}}/.ssh/authorized_keys"
+config: "/root/.ssh/config"
+key_data: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDb+M3Y/ewlHjNWzc1ic50XIfMj5paSli/mUzpzIGdrbJuNqtxkR+d/K5n64B4zwlEaF3MexvnFVTQR8wQ2vjD+9n3yDRSGvRu8PtBzEg6eBAo6bRt8JgyWhdyKK2vr2L3kAtwJDgA55wZXbCfsENW0zLXMa8IT0MuJg5MMbdmH5Auu2WylUFMcTBuTbUm2vQntIrQIHdIVQzjiwKvUSLLshe9/RH/RIsjy27n2pezy+cS23m7d2QcgMWK5rjHTux3pgtaUyqpIwLplmqNX8RjeoFzPpyK9l7r6xk5/eo3z6Ijuv4UHQDHYtSgEGq1l7ARDOv06sP4mos9QGJHYh/kn root@np-dp-mysql-data-01.gs.local"
+marker: "Auto Jenkins Server Ansible"
+
+# application jenkins
+jenkins_home: /var/lib/jenkins
+jenkins_local: /opt/jenkins
+jenkins_user: default
+image: myjenkins
+password: foobar
+sock: /var/run/docker.sock
+docker: /usr/bin/docker
+sysconfig: /etc/sysconfig/docker
+dockerfile: Dockerfile
+uid: 1000
+port: 8080
+yum_packs:
+  - gcc
+  - libffi-devel
+  - python-devel
+  - openssl-devel
+  - epel-release
+  - python-pip
+  - python-wheel
+pip_packs:
+  - "ansible[azure]"

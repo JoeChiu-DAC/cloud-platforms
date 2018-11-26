@@ -1,0 +1,155 @@
+---
+ - name: Create public IP address
+   azure_rm_publicipaddress:
+     resource_group: "{{ resource_group_name }}"
+     allocation_method: Static
+     name: "{{ public_ip }}"
+   register: output_ip_address
+
+ - name: Set public IP to pub_ip
+   set_fact:
+     pub_ip: "{{ output_ip_address.state.ip_address }}"
+
+
+ - name: Create Network Security Group that allows SSH
+   azure_rm_securitygroup:
+     resource_group: "{{ resource_group_name }}"
+     name: "{{ nsg_name }}" 
+     rules:
+       - name: SSH
+         protocol: Tcp
+         destination_port_range: 22
+         access: Allow
+         priority: 1001
+         direction: Inbound
+
+ - name: Create virtual network inteface card
+   azure_rm_networkinterface:
+     resource_group: "{{ resource_group_name }}"
+     name: "{{ my_nic }}"
+     virtual_network: "{{ vnet_name }}"
+     subnet: "{{ subnet_name }}"
+     public_ip_name: "{{ public_ip }}"
+     security_group: "{{ nsg_name }}"
+
+ - name: Create VM
+   azure_rm_virtualmachine:
+     resource_group: "{{ resource_group_name }}"
+     name: "{{ vm_name }}"
+     vm_size: Standard_A4_v2
+     admin_username:  "{{ admin_user }}"
+     ssh_password_enabled: false
+     ssh_public_keys:
+       - path: "{{ authkeys }}"
+         key_data: "{{ key_data }}"
+     network_interfaces: "{{ my_nic }}"
+     image:
+       offer: CentOS
+       publisher: OpenLogic
+       sku: '7.5'
+       version: latest
+
+
+ - name: Create SSH config file
+   file:
+     path: "{{ config }}"
+     mode: 0644
+     state: touch
+
+ - name: Add VM connection to the SSH config
+   blockinfile:
+     dest: "{{ config }}"
+     marker: "# {mark} {{ marker }}"
+     block: |
+       Host {{ sshname }}
+         User {{admin_user}}
+         StrictHostKeyChecking no
+         IdentityFile {{ sshkey }}
+         Hostname {{ pub_ip }}
+         Port 22
+
+ - name: Copy credentials to the Anisble VM
+   delegate_to: "{{ sshname }}"
+   become: yes
+   copy:
+     src: /root/.azure/credentials
+     dest: /tmp/foo 
+     owner: root
+     group: root
+     mode: 0644
+
+
+ - name: Setup the Azure credentials
+   delegate_to: "{{ sshname }}"
+   become: yes
+   shell: |
+     [ -d /root/.azure ] || mkdir /root/.azure
+     mv -f /tmp/foo /root/.azure/credentials
+
+# - name: Install Ansible packages
+#   delegate_to: "{{ sshname }}"
+#   become: yes
+#   yum: 
+#     name: ['gcc', 'libffi-devel', 'python-devel', 'openssl-devel'] 
+#     state: present
+
+# - name: Setup the epel-release 
+#   delegate_to: "{{ sshname }}"
+#   become: yes
+#   shell: |
+#     [ 'yum install -y epel-release',  'yum install -y python-pip',  'yum install -y python-wheel' ] 
+
+# - name: Install Ansible packages
+#   delegate_to: "{{ sshname }}"
+#   become: yes
+#   yum: 
+#     name: ['python-pip', 'python-wheel'] 
+ #    state: present
+#  - name: Install Ansible packages
+# #   delegate_to: "{{ sshname }}"
+#    become: yes
+#    yum: name={{ item }} state=present
+#    with_items:
+#     - gcc
+#     - libffi-devel
+#     - python-devel
+#     - openssl-devel
+ 
+ - name: Install Ansible packages
+   delegate_to: "{{ sshname }}"
+   become: yes
+   yum: name={{ item }} state=present
+   with_items:
+    - epel-release
+
+ - name: Install Ansible packages
+   delegate_to: "{{ sshname }}"
+   become: yes
+   yum: name={{ item }} state=present
+   with_items:
+    - ansible
+    - python-pip
+#    - python-wheel
+ - name: uninstall python package
+   delegate_to: "{{ sshname }}"
+   become: yes
+   pip: 
+      name: cryptography
+      state: absent
+#    - python-wheel
+ - name: install Asnible Azure pkgs
+   delegate_to: "{{ sshname }}"
+   become: yes
+   pip: 
+      name: "{{item}}"
+      state: present
+   with_items:
+      - pyopenssl
+      - "ansible[azure]"
+
+ - name: Fixing the ansible issue with latest ansible 
+   delegate_to: "{{ sshname }}"
+   become: yes
+   shell: |
+      perl -pi -e 's/#gather_subset = all/gather_subset = !all/' /etc/ansible/ansible.cfg
+

@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Delete a resource group
+      azure_rm_resourcegroup:
+        name: "InfraAutomationPOC"
+        state: absent
+        force: True
+

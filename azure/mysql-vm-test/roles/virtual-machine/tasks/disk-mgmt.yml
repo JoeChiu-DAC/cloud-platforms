@@ -1,0 +1,87 @@
+---
+# mount/umount drives
+# - name: Stop var log daemons
+#   delegate_to: "{{sshname}}"
+#   become: yes
+#   service: 
+#     name: "{{item}}"
+#     state: stopped
+#   with_items:
+#     - auditd
+#     - rsyslog
+#     - tuned
+
+- name: Stop var log daemons
+  delegate_to: "{{sshname}}"
+  become: yes
+  shell: |
+    service {{item}} stop
+  with_items:
+    - auditd
+    - rsyslog
+    - tuned
+
+# - name: Umount drive
+#   delegate_to: "{{sshname}}"
+#   become: yes
+#   mount:
+#     path: "/mnt/resource"
+#     src: "/dev/sdb1"
+#     state: unmounted
+# 
+# - name: Create a ext2 filesystem on devices
+#   delegate_to: "{{sshname}}"
+#   become: yes
+#   filesystem:
+#     fstype: "{{ft}}"
+#     dev: /dev/sdb1
+#     force: yes
+# 
+# - name: Mount drive
+#   delegate_to: "{{sshname}}"
+#   become: yes
+#   mount:
+#     path: "/var/log/"
+#     src: "/dev/sdb1"
+#     fstype: "{{ft}}"
+#     opts: discard,defaults
+#     state: mounted
+
+# mouting the drives
+- name: Format the file system on each of the disk
+  ignore_errors: yes
+  delegate_to: "{{sshname}}"
+  become: yes
+  filesystem:
+    fstype: "{{ft}}"
+    dev: "/dev/{{item.dev}}"
+    force: yes
+  with_items:
+    - "{{disk_mounts}}"
+
+- name: Create mount directory
+  ignore_errors: yes
+  delegate_to: "{{sshname}}"
+  become: yes
+  file:
+    dest: "/db/"
+    state: directory
+    owner: root
+    group: root
+    force: yes
+    mode: 0755
+
+- name: Mount drive
+  ignore_errors: yes
+  delegate_to: "{{sshname}}"
+  become: yes
+  mount:
+    path: "{{item.dir}}"
+    src: "/dev/{{item.dev}}"
+    fstype: "{{ft}}"
+    opts: discard,defaults
+    state: mounted
+  with_items:
+    - "{{disk_mounts}}"
+
+

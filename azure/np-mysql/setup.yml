@@ -1,0 +1,21 @@
+---
+# This playbook deploys the required stacks in this site.
+
+- name: apply common configuration to all nodes
+  hosts: common
+  become: yes
+  roles: 
+    - common
+  tags: 
+    - common
+    - setup
+
+- name: deploy MySQL and configure the databases
+  hosts: db
+  become: yes
+  roles: 
+    - db
+  tags: 
+    - db
+    - setup
+

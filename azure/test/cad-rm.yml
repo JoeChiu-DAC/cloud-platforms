@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+  # Create or update a template deployment based on uris using parameter and template links
+  - name: Create Azure Deploy
+    azure_rm_deployment:
+      state: absent
+      resource_group_name: DevOps-CAD
+      template_link: 'https://raw.githubusercontent.com/joehmchiu/cloud-platforms/master/azure/test.json'
+      parameters_link: 'https://raw.githubusercontent.com/joehmchiu/cloud-platforms/master/azure/test.param.json'
+

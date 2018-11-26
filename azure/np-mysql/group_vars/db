@@ -1,0 +1,42 @@
+---
+db_packages: [ 'mysql-community-server', 'mysql-community-common', 'MySQL-python' ]
+
+# create db files 
+datadir: /db/mysql
+db_dirs:
+    # for pid 
+    - { d: /var/run/mysqld, 	m: '0775' }
+    - { d: "{{datadir}}", 	m: '0775' }
+
+db_files:
+    # - { f: /var/log/mysqld.log, m: '0644' }
+    - { f: /var/log/mysqld.log, m: '0775' }
+
+# mysql 8 settings
+dbservice: mysqld
+dbname: foodb
+dbuser: foouser
+dbpass: xyz
+
+# packing / unpacking datbase dump 
+# '!' will cause "gzip: stdout: Broken pipe" issue
+mysql_root_password: Mysql#12345
+
+# user details - pass: password
+# to generate the encrypted password: php -r 'echo "*" . strtoupper(sha1(sha1("password", TRUE)));'
+db_users: 
+    - { user: test,        pass: '*2470C0C06DEE42FD1618BB99005ADCA2EC9D1E19' } 
+
+# mysqld configuration
+innodb_buffer_pool_size: 32G
+innodb_log_file_size: 512M
+expire_logs_days: 3
+
+port: 3306
+lower_case_table_names: 1
+
+socket: "{{ datadir/mysql.sock }}"
+log_bin: "{{ datadir/binlog }}"
+log_error: /var/log/mysqld.log
+pid_file: /var/run/mysqld/mysqld.pid
+

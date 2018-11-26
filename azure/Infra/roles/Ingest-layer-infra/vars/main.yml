@@ -1,0 +1,5 @@
+---
+# vars file for infra
+
+vnet_cidr: "10.81.0.0/16"
+subnet_cidr: "10.81.10.0/24"

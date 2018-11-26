@@ -1,0 +1,22 @@
+---
+# application jenkins
+jenkins_home: /var/lib/jenkins
+jenkins_local: /opt/jenkins
+jenkins_user: default
+image: myjenkins
+password: foobar
+sock: /var/run/docker.sock
+docker: /usr/bin/docker
+sysconfig: /etc/sysconfig/docker
+dockerfile: Dockerfile
+uid: 1000
+port: 8080
+yum_packs:
+  - epel-release
+  - ansible
+  - python-pip
+pip_rm_packs:
+  - cryptography
+pip_packs:
+  - pyopenssl
+  - "ansible[azure]"
