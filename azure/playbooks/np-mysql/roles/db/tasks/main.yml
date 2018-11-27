@@ -1,0 +1,72 @@
+---
+# This playbook will install MariaDB, create db users, setup mysql security and grant user permissions.
+
+- name: db process starting
+  shell: |
+    {{app}} {{role_path|basename}} "{{item}}" {{log_file}}
+  with_items:
+    - "{{role_path|basename}} process started"
+
+- name: db process - Install mysql packages
+  shell: |
+    {{app}} {{role_path|basename}} "installing mysql package - {{item}}" {{log_file}}
+  with_items:
+   - "{{db_packages}}"
+
+- name: Install mysql packages
+  yum: name={{ item }} state=installed
+  with_items:
+   - "{{db_packages}}"
+
+- name: db process - setting up mysql configurations, files and directories
+  shell: |
+    {{app}} {{role_path|basename}} "setting up mysql configurations, files and directories" {{log_file}}
+
+- name: Configure SELinux to start mysql on the target port
+  seboolean: name=mysql_connect_any state=true persistent=yes
+
+# - name: Create Mysql configuration file
+#   template: src=my.cnf.j2 dest=/etc/my.cnf
+
+- name: Create db files
+  file: path={{item.f}} state=touch owner=mysql group=mysql mode={{item.m}}
+  with_items:
+    - "{{db_files}}"
+
+- name: Create db directories
+  file: path={{item.d}} state=directory owner=mysql group=mysql mode={{item.m}}
+  with_items:
+    - "{{db_dirs}}"
+#   notify: restart mysql
+
+# - name: restart mysql
+- name: restart mysql
+  service: name={{dbservice}} state=started enabled=yes
+
+- name: get root user password
+  shell: |
+    grep 'temporary password' /var/log/mysqld.log | tail -1 | grep -oE '[^ ]+$'
+  register: root_pass
+
+- name: set root user password
+  set_fact:
+    mysql_temp_password: "{{ root_pass.stdout | replace('\n', '') }}"
+
+- name: db process starting
+  shell: |
+    {{app}} {{role_path|basename}} "temporary password: '{{mysql_temp_password}}'" {{log_file}}
+
+- name: set root user password
+  shell: |
+    /usr/bin/mysqladmin -uroot -p'{{mysql_temp_password}}' password '{{mysql_root_password}}'
+
+# set timezone support
+- name: add timezone support to mysql
+  shell: mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --user=root --password={{ mysql_root_password }} mysql
+
+- name: db process finished 
+  shell: |
+    {{app}} {{role_path|basename}} "{{item}}" {{log_file}}
+  with_items:
+    - "{{role_path|basename}} process started"
+

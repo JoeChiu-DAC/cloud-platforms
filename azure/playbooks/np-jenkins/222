@@ -1,0 +1,38 @@
+timeout(400) {
+    node {
+        repositoryUrl = "https://github.com/NSWDAC/DAC625-DAC-Platform-Migration.git"
+        srcDir="./Infrastructure/Non-Prod/Automation Mgmt/src/Ansible Controller/"
+        srcDir="./Infrastructure/src/NonProd/Ansible/"
+        playbook = "ansible-controller.yml"
+        branch = "master"
+
+        withEnv(["PATH+ANSIBLE=${tool 'ansible-2.4.2.0'}"]) {
+
+            stage 'Init Working Env'
+            sh 'sudo /opt/vars/init.sh'
+
+            stage 'Check List'
+            sh 'ls -alrt'
+
+            stage 'Check Ansible Availability'
+            sh 'which ansible'
+
+            stage 'Check Ansible Version'
+            sh 'ansible --version'
+
+            stage 'Git Update'
+            git url: repositoryUrl, credentialsId: "dac-2018", branch: branch
+
+            stage 'Run Playbook Tasks'
+            ansiblePlaybook (
+                playbook: "${srcDir}${playbook}",
+                tags: 'create',
+                sudo: true
+            )
+
+            stage "Tasks Logged"
+            sh 'sudo /opt/vars/log.sh "Create a VM"'
+        }
+    }
+}
+

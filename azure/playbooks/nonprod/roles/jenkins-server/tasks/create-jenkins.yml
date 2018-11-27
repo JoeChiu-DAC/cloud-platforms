@@ -1,0 +1,53 @@
+---
+# create a jenkins server
+
+- name: jenkins hello world
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    echo "hello world" >> /tmp/foobar.log
+
+# - name: ensure that firewalld is started and enable at boot
+#   delegate_to: "{{ sshname }}"
+#   become: yes
+#   service: name=firewalld enabled=yes state=started
+
+- name: Install docker
+  delegate_to: "{{ sshname }}"
+  become: yes
+  yum: name={{ item }} state=installed
+  with_items:
+   - docker
+
+- name: Start the dockerd service
+  delegate_to: "{{ sshname }}"
+  become: yes
+  service: name=docker state=started enabled=yes
+
+- name: Create jenkins directory beforehand
+  delegate_to: "{{ sshname }}"
+  become: yes
+  file: path={{ jenkins_local }} state=directory owner={{uid}} mode=0755
+
+- name: Copy dockerfile to /tmp
+  delegate_to: "{{ sshname }}"
+  become: yes
+  template: src={{ dockerfile }}.j2 dest=/tmp/{{ dockerfile }}
+
+- name: Build a local jenkins docker container, it takes time...
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    cd /tmp/; docker build -t {{image}} .
+  args:
+    warn: no
+
+- name: Run jenkins docker daemon at port 9191
+  delegate_to: "{{ sshname }}"
+  become: yes
+  shell: |
+    docker run -u {{uid}} -e JENKINS_PASSWORD={{password}} -p {{port}}:8080 -p 50000:50000 -v {{sock}}:{{sock}}:z -v {{docker}}:{{docker}} -v {{sysconfig}}:{{sysconfig}}:z -v {{jenkins_local}}:{{jenkins_home}}:z -d myjenkins
+  args:
+    warn: no
+
+

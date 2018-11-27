@@ -1,0 +1,14 @@
+---
+- hosts: mysql
+  become: yes
+  vars:
+    resource_group_name: mysql-test-rg
+    filesystem: 'ext4'                                      
+  tasks:
+    - name: Create container foo
+      azure_rm_storageblob:
+        resource_group: "{{resource_group_name}}"
+        storage_account_name: clh0002
+        container: foo
+        state: present
+

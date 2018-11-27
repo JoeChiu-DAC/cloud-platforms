@@ -1,0 +1,14 @@
+ for i in `lsof +D /var/log | awk '!/COMMAND/{print $1 | "sort -u"}'`; do service $i stop; done
+
+Filesystem     Type      Size  Used Avail Use% Mounted on
+/dev/sda2      xfs        30G  1.2G   29G   5% /
+devtmpfs       devtmpfs   28G     0   28G   0% /dev
+tmpfs          tmpfs      28G     0   28G   0% /dev/shm
+tmpfs          tmpfs      28G  9.0M   28G   1% /run
+tmpfs          tmpfs      28G     0   28G   0% /sys/fs/cgroup
+/dev/sdb1      ext2      111G   60M  105G   1% /var/log
+/dev/sdc       ext2      9.9G   23M  9.4G   1% /mnt/pd01
+/dev/sda1      xfs       497M   81M  417M  17% /boot
+tmpfs          tmpfs     5.6G     0  5.6G   0% /run/user/1000
+
+

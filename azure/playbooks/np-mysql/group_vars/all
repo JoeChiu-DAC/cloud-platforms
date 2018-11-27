@@ -1,0 +1,45 @@
+---
+# create users and password pair for system user accounts
+# to generate the encrypted password: mkpasswd --method=sha-512 password
+user_accounts:
+    - { user: username,    pass: $6$/LSSI/mKt$AuhndmeQEPpHrd3dY/sjgLhd0bjAbNQj2FerGMBx97Gxsqi4kGQCqH7AEaDxl9aLOQ6Kxdzi7g621i7fQ.GiN. }
+
+# packages for yum installation
+packages: [ ntp, expect ]
+# packages: [ firewalld, ntp, expect ]
+
+# packages: [ realmd, oddjob, 'oddjob-mkhomedir', sssd, adcli, 'samba-common-tools', 'sssd-client', mlocate, ldaputil, 'ldap-utils', openldap, ldapsearch, 'openldap-clients', 'cyrus-sasl-scram' ]
+
+# directories need to be created 
+
+# undo
+undo_files: 
+    - /var/run/mysqld
+    - /etc/my.cnf*
+    - /var/log/mysql*.log
+    - /tmp/my.cnf*
+    - /etc/ntp.conf
+    - /root/.my.cnf*
+    - /var/lib/mysql
+
+undo_packages:
+    - mysql
+    - mysql80-community-release.noarch
+#    - mysql-community-release.noarch
+
+local_packages:
+    - https://repo.mysql.com/mysql80-community-release-el7-1.noarch.rpm
+#    - http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+
+disable_repo:
+    - mysql55-community
+    - mysql56-community
+    - mysql57-community
+
+dump_file: all.sql.gz
+
+# database dumped files
+db_files: [ test ]
+
+# keep installation info to the log file
+log_file: /tmp/playbook-mysql8.log

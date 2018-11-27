@@ -1,0 +1,8 @@
+---
+# delete the disk
+- name: Create managed disk
+  azure_rm_managed_disk:
+    name: mysqltmpdisk
+    location: "{{vm_location}}"
+    resource_group: "{{resource_group_name}}"
+    state: absent

@@ -1,0 +1,10 @@
+---
+# this playbook will pack and unpack the system directories/files to migrate to remote site
+
+- name: finalizing all the tasks
+  hosts: complete
+  become: yes
+  roles:
+    - comp
+  tags: complete
+

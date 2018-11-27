@@ -1,0 +1,8 @@
+---
+# vars file for infra
+# subscription_id: NSWDAC_NONPROD
+ default_location: australiaeast
+ resource_group_name: npdac-mgmt-rg 
+ vnet_name: npdac-mgmt-vnet 
+ subnet_name: npdac-mgmt-subnet
+

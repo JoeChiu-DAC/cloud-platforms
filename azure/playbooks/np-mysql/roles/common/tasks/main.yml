@@ -1,0 +1,27 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "{{role_path|basename}} process started" {{log_file}}
+
+- name: common process message
+  shell: |
+    {{app}} {{role_path|basename}} "installing {{item}}" {{log_file}}
+  with_items:
+    - "{{packages}}"
+
+- name: Install common packages
+  yum: name={{item}} state=installed
+  with_items:
+   - "{{packages}}"
+
+- name: Configure ntp file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "{{role_path|basename}} process finished" {{log_file}}
+

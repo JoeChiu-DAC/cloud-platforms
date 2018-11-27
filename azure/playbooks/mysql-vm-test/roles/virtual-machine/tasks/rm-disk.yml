@@ -1,0 +1,10 @@
+---
+# delete the disk
+- name: Create managed disk
+  azure_rm_managed_disk:
+    name: "{{item.name}}disk"
+    location: "{{vm_location}}"
+    resource_group: "{{resource_group_name}}"
+    state: absent
+  with_items:
+    - "{{disk_mounts}}"

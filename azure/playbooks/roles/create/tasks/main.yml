@@ -1,0 +1,11 @@
+---
+# tasks file for create
+
+# Create or update a template deployment based on uris using parameter and template links
+- name: Create Azure Deploy to JoeSandbox
+  azure_rm_deployment:
+    state: present
+    resource_group_name: "{{ resource_group }}"
+    location: australiaeast
+    template_link: 'https://raw.githubusercontent.com/joehmchiu/cloud-platforms/master/azure/js.json'
+    parameters_link: 'https://raw.githubusercontent.com/joehmchiu/cloud-platforms/master/azure/js.param.json'

@@ -1,0 +1,9 @@
+---
+# vars file for infra
+
+vnet_cidr: "10.83.0.0/16"
+dm_cidr: "10.83.10.0/27"
+siradm_cidr: "10.83.11.0/24"
+qlik_cidr: "10.83.21.0/24"
+tab_cidr: "10.83.22.0/24"
+pb_cidr: "10.83.23.0/24"

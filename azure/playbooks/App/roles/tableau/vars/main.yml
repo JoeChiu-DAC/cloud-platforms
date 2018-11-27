@@ -1,0 +1,28 @@
+---
+# vars file for tableau
+
+resource_group_name: npdac-presentation-rg
+#vnet_name: npdac-presentation-vnet
+#tab_subnet: npdac-presentation-tab-subnet
+#nsg_name: npdac-presentation-tab-nsg
+#admin_user: azureuser
+#vm_name: nptableau01
+#my_nic: nptableauNIC
+#public_ip_name: TableauPublicIP
+
+
+#Blob details
+repo: npdacapplicationpackages
+container: sampleapp
+url: https://npdacapplicationpackages.blob.core.windows.net
+tab_pkg: tableau-server-automated-installer-2018-3.noarch.rpm
+server_pkg: tableau-server-10-5-0.x86_64.rpm
+auto_installer: '{{ url }}/{{ container }}/{{ tab_pkg }}'
+tabl_server_pkg: '{{ url }}/{{ container }}/{{ server_pkg }}'
+tsmadmin: sesha
+tsmpasswd: Tresury123!
+
+tab_serv_adm_usr: sesha
+tab_serv_adm_pass: Treasury123!
+
+installer_path: /opt/tableau/tableau_server_automated_installer/automated-installer.20183.18.1019.1426

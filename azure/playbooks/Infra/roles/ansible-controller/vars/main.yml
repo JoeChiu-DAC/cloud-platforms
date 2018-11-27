@@ -1,0 +1,24 @@
+---
+# vars file for ansible-controller
+#default_location: australiaeast
+resource_group_name: npdac-mgmt-rg
+vnet_name: npdac-mgmt-vnet
+subnet_name: npdac-mgmt-subnet
+nsg_name: npdac-mgmt-nsg
+admin_user: azureuser
+vm_name: AnsibleVM 
+my_nic: AnsibleNIC 
+public_ip: AnsiblePublicIP
+
+# installed packages
+yum_packs:
+  - gcc
+  - libffi-devel
+  - python-devel
+  - openssl-devel
+  - epel-release
+  - python-pip
+  - python-wheel
+pip_packs:
+  - "ansible[azure]"
+

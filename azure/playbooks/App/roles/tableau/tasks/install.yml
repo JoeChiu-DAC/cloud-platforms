@@ -1,0 +1,26 @@
+---
+#- name: install tableau automated installer rpm from Azure Blob
+#  become: yes
+#  yum:
+#    name: "{{ auto_installer }}" 
+#    state: present
+
+- name: copy the configuration files to /tmp
+  template:
+    src: secrets.j2
+    dest: /tmp/secrets
+- name: copy the configuration files to /tmp
+  template:
+    src: reg_templ.json.j2
+    dest: /tmp/reg_templ.json
+- name: copy the configuration files to /tmp
+  template:
+    src: config.json.j2
+    dest: /tmp/config.json
+
+- name: installing the tableau server
+  become: yes
+#  command: 'automated-installer -s /tmp/secrets -f /tmp/config.json -r /tmp/reg_templ.json  --accepteula /tmp/"{{ server_pkg }}"'
+  command: '"{{ installer_path }}"/automated-installer -s /tmp/secrets -f /tmp/config.json -r /tmp/reg_templ.json  --accepteula /tmp/"{{ server_pkg }}"'
+#  args:
+#    chdir: "{{ installer_path }}"

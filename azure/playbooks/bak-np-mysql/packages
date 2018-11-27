@@ -1,0 +1,2 @@
+[ realmd, oddjob, 'oddjob-mkhomedir', sssd, adcli, 'samba-common-tools', 'sssd-client', mlocate, ldaputil, 'ldap-utils', openldap, ldapsearch, 'openldap-clients', 'cyrus-sasl-scram' ]
+

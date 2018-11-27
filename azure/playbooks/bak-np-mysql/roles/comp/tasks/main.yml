@@ -1,0 +1,7 @@
+---
+
+- name: db process finished
+  shell: |
+    {{app}} {{role_path|basename}} "{{role_path|basename}} - FIN" {{log_file}}
+
+

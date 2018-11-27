@@ -1,0 +1,12 @@
+---
+# Example Playbook
+- name: Compute Engine Instance Examples
+  hosts: localhost
+  vars_files:
+    - /opt/vars/dac-github.yml
+  tasks:
+    - name: clone the dac automation playbook for Jenkins server
+      git:
+        repo: 'https://{{ gituser | urlencode }}:{{ gitpass }}@github.com/NSWDAC/DAC625-DAC-Platform-Migration.git'
+        dest: /tmp/foobar
+

@@ -1,0 +1,43 @@
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/8.0/en/server-configuration-defaults.html
+
+[client]
+port          = {{port}}
+socket        = /db/mysql/mysql.sock
+
+[mysql]
+#user=root
+#password=Mysql#8011
+
+[mysqld]
+#
+# Remove leading # and set to the amount of RAM for the most important data
+# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
+
+server-id = 31105 # 8.0.12 - server 1
+innodb-buffer-pool-size = 96G # server RAM 128GB
+innodb_log_file_size = 1G
+log_bin_index = /db/mysql/np-dp-mysql-data-01-bin.index
+log-slave-updates=1
+skip-slave-start
+
+# because of ROW causing issues with slave lag, to be reconsidered after the upgrade
+# binlog_format = STATEMENT
+# binlog_format = ROW
+binlog_format = MIXED
+
+expire_logs_days = 2
+
+socket=/db/mysql/mysql.sock
+datadir=/db/mysql
+log_bin=/db/mysql/binlog
+lower_case_table_names=0
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+
+[mysqladmin]
+socket=/db/mysql/mysql.sock
+
+[mysqldump]
+socket=/db/mysql/mysql.sock
+

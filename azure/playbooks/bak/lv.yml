@@ -1,0 +1,77 @@
+---
+- hosts: mysql
+  become: yes
+  vars:
+    config_lvm: true
+    create: true
+    resize: true
+    extend: true
+    current_disk: '/dev/sda2'                               
+    new_disk: '/db'                                    
+    new_mntp: '/var/lib/mysql'                              
+    create_vgname: 'mysql-vg'                               
+    resize_vgname: 'test-vg'                                
+    extend_vgname: 'test-vg'                                
+    create_lvname: 'mysql-lv'                               
+    resize_lvname: 'test-lv'                                
+    extend_lvname: 'test-lv'                                
+    create_lvsize: '100%FREE'                               
+    extend_disks: '{{ current_disk }},{{ new_disk }}'       
+    lvextend_options: '-L+10G'                              
+    filesystem: 'ext4'                                      
+  tasks:
+    - name: hello world
+      shell:
+        echo "hello world" >> /tmp/hello
+
+    - name: installing lvm2
+      apt: name=lvm2 state=present
+      when: config_lvm and ansible_os_family == "Debian"
+
+    - name: installing lvm2
+      yum: name=system-storage-manager state=present
+      when: config_lvm and ansible_os_family == "RedHat"
+
+    - name: installing scsitools
+      apt: name=scsitools state=present
+      when: config_lvm and ansible_os_family == "Debian"
+
+    - name: installing sg3_utils
+      yum: name=sg3_utils state=present
+      when: config_lvm and ansible_os_family == "RedHat"
+
+    - name: rescanning for new disks
+      command: /sbin/rescan-scsi-bus
+      when: config_lvm and ansible_os_family == "Debian"
+
+    - name: rescanning for new disks
+      command: /usr/bin/rescan-scsi-bus.sh
+      when: config_lvm and ansible_os_family == "RedHat"
+
+    - name: creating new LVM volume group
+      lvg: vg={{ create_vgname }} pvs={{ new_disk }} state=present
+      when: create and config_lvm
+
+    - name: creating new LVM logical volume
+      lvol: vg={{ create_vgname }} lv={{ create_lvname }} size={{ create_lvsize }}
+      when: create and config_lvm
+
+    - name: creating new filesystem on new LVM logical volume
+      filesystem: fstype={{ filesystem }} dev=/dev/{{ create_vgname }}/{{ create_lvname }}
+      when: create and config_lvm
+
+    - name: mounting new filesystem
+      mount: name={{ new_mntp }} src=/dev/{{ create_vgname }}/{{ create_lvname }} fstype={{ filesystem }} state=mounted
+      when: create and config_lvm
+
+    - name: extending existing LVM volume group
+      lvg: vg={{ extend_vgname }} pvs={{ extend_disks }}
+      when: extend and config_lvm
+
+    - name: extending existing filesystem
+      command: lvextend {{ lvextend_options }} /dev/{{ extend_vgname }}/{{ extend_lvname }}
+      when: extend and config_lvm
+
+    - name: resizing filesystem
+      command: resize2fs /dev/{{ resize_vgname }}/{{ resize_lvname }}
+      when: resize and config_lvm

@@ -1,0 +1,53 @@
+---
+- name: set ts application for logging
+  set_fact:
+    app: "{{playbook_dir}}/ts"
+
+- name: preload process starting
+  shell: |
+    {{app}} {{role_path|basename}} "{{item}}" {{log_file}}
+  with_items:
+    - "{{role_path|basename}} process started"
+
+- name: set fact
+  set_fact:
+    foo: [foobar, and, hello, world]
+
+- name: display ansible info
+  shell: |
+    {{app}} {{role_path|basename}} "{{item}}" {{log_file}}
+  with_items:
+    - "OS: {{ansible_os_family}}, Distribution: {{ansible_distribution}}"
+
+- name: Pre-install the MySQL repo and update yum
+  command: /usr/bin/yum localinstall -y {{item}}
+  with_items:
+    - "{{local_packages}}"
+
+- name: disaable the MySQL repo other than 8.0
+  command: yum-config-manager --disable {{item}}
+  with_items:
+    - "{{disable_repo}}"
+  notify:
+    - yum update
+
+- name: Alternative settings for MySQL GA
+  set_fact:
+    mysql_daemon: mysqld
+    mysql_packages: ['mysql-server']
+    mysql_log_error: /var/log/mysqld.err
+    mysql_syslog_tag: mysqld
+    mysql_pid_file: /var/run/mysqld/mysqld.pid
+    mysql_socket: /var/lib/mysql/mysql.sock
+
+- name: display variable
+  debug:
+    msg: "{{authentication_ldap_simple_user_search_attr}}"
+
+- name: check the current mysql config file installed in the mysql8 test server
+  template: src=my.cnf.j2 dest=/tmp/my.cnf
+
+- name: process message
+  shell: |
+    {{app}} {{role_path|basename}} "{{role_path|basename}} process finished" {{log_file}}
+

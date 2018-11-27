@@ -1,0 +1,15 @@
+---
+
+- name: Check that you can connect (GET) to a Azure Blob and download pkg
+  uri:
+#    url: https://npdacapplicationpackages.blob.core.windows.net/sampleapp/tableau-server-automated-installer-2018-3.noarch.rpm
+    url: https://npdacapplicationpackages.blob.core.windows.net/sampleapp/tableau-server-10-5-0.x86_64.rpm
+    dest: /tmp
+
+#- name: Download the file
+#  azure_rm_storageblob:
+#    resource_group: "{{ resource_group_name }}" 
+#    storage_account_name: "{{ repo }}"
+#    container: "{{ container }}"
+#    blob: "{{ installer_pkg }}"
+#    dest: '~/tmp/"{{ installer_pkg }}"'

@@ -1,0 +1,14 @@
+---
+# tasks file for ansible-jenkins
+- include: create-vm.yml
+  tags: create
+
+- include: add-disks.yml
+  tags: addisk
+
+- include: disk-mgmt.yml
+  tags: mgmtdisk
+
+#- include: rm-disk.yml
+#  tags: rmdisk
+

@@ -1,0 +1,16 @@
+[undo]
+
+[db]
+localhost
+
+[common]
+localhost
+
+[preload]
+localhost
+
+[test]
+localhost
+
+[complete]
+localhost

@@ -1,0 +1,9 @@
+---
+# vars file for infra
+resource_group_name: InfraAutomationPOC 
+admin_user: azureuser
+vnet_name: myVnet
+vm_name: mySQL
+subnet_name: mySubnet 
+nsg_name: myNetworkSecurityGroup
+public_ip_name: myPublicIP

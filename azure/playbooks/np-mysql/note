@@ -1,0 +1,38 @@
+[2018-11-27 00:57:15] RESTART   Task Processes Started
+[2018-11-27 00:57:16] UNDO      undo process started
+[2018-11-27 00:57:16] UNDO      removing file - /var/run/mysqld
+[2018-11-27 00:57:16] UNDO      removing file - /etc/my.cnf*
+[2018-11-27 00:57:17] UNDO      removing file - /var/log/mysql*.log
+[2018-11-27 00:57:17] UNDO      removing file - /tmp/my.cnf*
+[2018-11-27 00:57:18] UNDO      removing file - /etc/ntp.conf
+[2018-11-27 00:57:18] UNDO      removing file - /root/.my.cnf*
+[2018-11-27 00:57:19] UNDO      removing file - /var/lib/mysql
+[2018-11-27 00:57:22] UNDO      removing file - /var/log/mysqld.log
+[2018-11-27 00:57:23] UNDO      removing directory - /var/run/mysqld
+[2018-11-27 00:57:23] UNDO      removing directory - /db/mysql
+[2018-11-27 00:57:25] UNDO      removing package - ntp
+[2018-11-27 00:57:25] UNDO      removing package - expect
+[2018-11-27 00:57:25] UNDO      removing package - libsemanage-python
+[2018-11-27 00:57:26] UNDO      removing package - mysql-community-server
+[2018-11-27 00:57:26] UNDO      removing package - mysql-community-common
+[2018-11-27 00:57:27] UNDO      removing package - MySQL-python
+[2018-11-27 00:57:27] UNDO      removing package - mysql
+[2018-11-27 00:57:27] UNDO      removing package - mysql80-community-release.noarch
+[2018-11-27 00:57:35] UNDO      undo process finished
+[2018-11-27 00:57:36] PRELOAD   preload process started
+[2018-11-27 00:57:36] PRELOAD   OS: RedHat, Distribution: CentOS
+[2018-11-27 00:57:40] PRELOAD   preload process finished
+[2018-11-27 00:57:43] COMMON    common process started
+[2018-11-27 00:57:43] COMMON    installing ntp
+[2018-11-27 00:57:43] COMMON    installing expect
+[2018-11-27 00:57:48] COMMON    common process finished
+[2018-11-27 00:57:49] DB        db process started
+[2018-11-27 00:57:49] DB        installing mysql package - libsemanage-python
+[2018-11-27 00:57:50] DB        installing mysql package - mysql-community-server
+[2018-11-27 00:57:50] DB        installing mysql package - mysql-community-common
+[2018-11-27 00:57:51] DB        installing mysql package - MySQL-python
+[2018-11-27 00:59:24] DB        setting up mysql configurations, files and directories
+[2018-11-27 00:59:48] DB        temporary password: '_BgI;1ER8n,!'
+[2018-11-27 00:59:52] DB        db process started
+[2018-11-27 00:59:53] COMP      comp - FIN
+

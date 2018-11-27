@@ -1,0 +1,9 @@
+---
+# This playbook deploys the required stacks in this site.
+
+- name: only a test
+  hosts: test
+  roles:
+    - test
+  tags: 
+    - test

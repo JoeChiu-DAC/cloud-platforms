@@ -1,0 +1,10 @@
+---
+# Undo all the Tasks in one go
+
+- name: undo the installation
+  hosts: undo
+  become: yes
+  roles:
+    - undo
+  tags: undo
+

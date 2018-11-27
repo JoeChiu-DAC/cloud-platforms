@@ -1,0 +1,8 @@
+---
+- name: preload the installation prerequistes
+  hosts: preload
+  become: yes
+  roles:
+    - preload
+  tags: 
+    - preload
